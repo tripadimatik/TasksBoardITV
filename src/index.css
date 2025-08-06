@@ -1,0 +1,445 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply text-foreground;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: hsl(var(--background));
+    position: relative;
+  }
+
+  /* Казахстанские цвета для акцентов */
+  .kz-primary {
+    @apply text-sky-600;
+  }
+
+  .kz-accent {
+    @apply bg-gradient-to-r from-sky-500 to-amber-400;
+  }
+  
+  /* Обеспечиваем правильное отображение на всех устройствах */
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Современные анимации и переходы */
+
+  /* Плавные переходы только для интерактивных элементов */
+  a, input, textarea, select {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  }
+
+  button {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  button:active {
+    transform: scale(0.98);
+  }
+
+  /* Анимации для карточек */
+  .card-hover {
+    transition: box-shadow 0.15s ease;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Анимации появления */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Классы для анимаций */
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.2s ease;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.15s ease;
+  }
+
+  /* Улучшенные переходы для модальных окон */
+  .modal-overlay {
+    animation: fadeIn 0.15s ease;
+  }
+
+  .modal-content {
+    animation: fadeIn 0.15s ease;
+  }
+
+  /* Плавные переходы для форм */
+  input:focus, textarea:focus, select:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+  }
+
+  /* Анимации для загрузки */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Улучшенные переходы для навигации */
+  .nav-item {
+    transition: background-color 0.15s ease, color 0.15s ease;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #0ea5e9, #f59e0b);
+    border-radius: 2px;
+    transform: scaleY(0);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-item:hover::before {
+    transform: scaleY(1);
+  }
+
+  /* Плавные переходы для бейджей */
+  .badge {
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  /* Анимации для уведомлений */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+  }
+
+  .toast-enter {
+    animation: slideInRight 0.2s ease;
+  }
+
+  .toast-exit {
+    animation: slideOutRight 0.2s ease;
+  }
+
+  /* Улучшенные переходы для выпадающих меню */
+  .dropdown-content {
+    animation: fadeIn 0.15s ease;
+    transform-origin: top;
+  }
+
+  /* Плавные переходы для переключателей */
+  .switch {
+    transition: background-color 0.15s ease;
+  }
+
+  /* Анимации для прогресс-баров */
+  @keyframes progressFill {
+    from {
+      width: 0%;
+    }
+  }
+
+  .progress-bar {
+    animation: progressFill 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Улучшенные переходы для табов */
+  .tab-content {
+    animation: fadeIn 0.15s ease;
+  }
+
+  /* Анимации для скелетонов загрузки */
+  @keyframes shimmer {
+    0% {
+      background-position: -200px 0;
+    }
+    100% {
+      background-position: calc(200px + 100%) 0;
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Плавные переходы для иконок */
+  .icon {
+    transition: opacity 0.15s ease;
+  }
+
+  .icon:hover {
+    opacity: 0.8;
+  }
+
+  /* Анимации для статусных индикаторов */
+  @keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+      transform: translate3d(0, -8px, 0);
+    }
+    70% {
+      transform: translate3d(0, -4px, 0);
+    }
+    90% {
+      transform: translate3d(0, -2px, 0);
+    }
+  }
+
+  .animate-bounce-subtle {
+    animation: bounce 1s ease-in-out;
+  }
+
+  /* Улучшенная прокрутка */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Плавные переходы для фокуса */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    transition: outline 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Мобильная совместимость */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Улучшение производительности на мобильных */
+  * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Адаптивные размеры для мобильных */
+  @media (max-width: 768px) {
+    html {
+      font-size: 14px;
+    }
+    
+    body {
+      overflow-x: hidden;
+    }
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: 13px;
+    }
+  }
+
+
+
+  /* Анимация исчезновения задач */
+  .task-disappear {
+    animation: task-move-out 0.3s ease-in;
+  }
+
+  .task-moving {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+    transition: box-shadow 0.2s ease-out;
+    z-index: 10;
+    position: relative;
+  }
+
+}

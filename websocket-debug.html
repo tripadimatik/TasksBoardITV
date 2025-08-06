@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Debug</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Debug Tool</h1>
+    <div id="status">Disconnected</div>
+    <div id="log"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+        
+        function addLog(message) {
+            const div = document.createElement('div');
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            log.appendChild(div);
+            console.log(message);
+        }
+        
+        // Получаем токен из localStorage (если есть)
+        const token = localStorage.getItem('authToken');
+        
+        if (!token) {
+            addLog('❌ Нет токена аутентификации в localStorage');
+            addLog('Откройте основное приложение и войдите в систему, затем обновите эту страницу');
+        } else {
+            addLog('✅ Токен найден: ' + token.substring(0, 20) + '...');
+            
+            const socket = io('http://localhost:3001', {
+                transports: ['websocket', 'polling'],
+                timeout: 20000
+            });
+            
+            socket.on('connect', () => {
+                addLog('🔌 WebSocket подключен: ' + socket.id);
+                status.textContent = 'Connected';
+                status.style.color = 'green';
+                
+                // Аутентификация
+                socket.emit('authenticate', token);
+                addLog('🔑 Отправлен токен для аутентификации');
+            });
+            
+            socket.on('authenticated', (data) => {
+                addLog('✅ Аутентификация успешна: ' + JSON.stringify(data));
+            });
+            
+            socket.on('authentication_error', (error) => {
+                addLog('❌ Ошибка аутентификации: ' + JSON.stringify(error));
+            });
+            
+            socket.on('disconnect', (reason) => {
+                addLog('🔌 WebSocket отключен: ' + reason);
+                status.textContent = 'Disconnected';
+                status.style.color = 'red';
+            });
+            
+            socket.on('connect_error', (error) => {
+                addLog('❌ Ошибка подключения: ' + error.message);
+                status.textContent = 'Error';
+                status.style.color = 'red';
+            });
+            
+            // Слушаем события задач
+            socket.on('task_created_global', (task) => {
+                addLog('📝 ПОЛУЧЕНО: task_created_global - ' + JSON.stringify(task, null, 2));
+            });
+            
+            socket.on('task_updated_global', (task) => {
+                addLog('📝 ПОЛУЧЕНО: task_updated_global - ' + JSON.stringify(task, null, 2));
+            });
+            
+            socket.on('task_created', (task) => {
+                addLog('📝 ПОЛУЧЕНО: task_created - ' + JSON.stringify(task, null, 2));
+            });
+            
+            socket.on('task_updated', (task) => {
+                addLog('📝 ПОЛУЧЕНО: task_updated - ' + JSON.stringify(task, null, 2));
+            });
+        }
+    </script>
+</body>
+</html>

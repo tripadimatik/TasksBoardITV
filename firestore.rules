@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isRole(role) {
+      return isAuth() && getUserData().role == role;
+    }
+
+    function isAdminOrBoss() {
+      return isAuth() && (isRole('admin') || isRole('boss'));
+    }
+
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow update: if isAuth() && (request.auth.uid == userId || isAdminOrBoss());
+      allow create: if isAuth() && request.auth.uid == userId;
+      allow list: if isAuth();
+      allow delete: if isAdminOrBoss();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isAuth();
+      // Разрешаем обновление, если пользователь админ/босс, или если он исполнитель задачи,
+      // или если он берет задачу в работу (меняет статус на 'в работе')
+      allow update: if isAdminOrBoss() || 
+                     (isAuth() && resource.data.assigneeId == request.auth.uid) || 
+                     (isAuth() && request.resource.data.status == 'в работе');
+      allow create, delete: if isAdminOrBoss();
+      allow list: if isAuth();
+    }
+  }
+}

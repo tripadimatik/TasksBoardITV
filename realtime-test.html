@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Task Updates Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        .log { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+        button { padding: 10px 20px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #logs { max-height: 400px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Тест обновлений задач в реальном времени</h1>
+    
+    <div class="info">
+        <strong>Инструкция:</strong>
+        <ol>
+            <li>Откройте основное приложение в другой вкладке: <a href="https://localhost:8080" target="_blank">https://localhost:8080</a></li>
+            <li>Войдите в систему как администратор</li>
+            <li>Создайте новую задачу и назначьте её другому пользователю</li>
+            <li>Наблюдайте за логами ниже - должны появиться WebSocket события</li>
+        </ol>
+    </div>
+    
+    <div id="connection-status" class="status error">❌ Не подключен</div>
+    
+    <div>
+        <button onclick="testConnection()">🔌 Тест подключения</button>
+        <button onclick="clearLogs()">🗑️ Очистить логи</button>
+    </div>
+    
+    <h3>📋 Логи WebSocket событий:</h3>
+    <div id="logs"></div>
+    
+    <script>
+        let socket = null;
+        const logsDiv = document.getElementById('logs');
+        const statusDiv = document.getElementById('connection-status');
+        
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'log';
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            logsDiv.appendChild(div);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(message, isConnected) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${isConnected ? 'success' : 'error'}`;
+        }
+        
+        function testConnection() {
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                addLog('❌ Токен аутентификации не найден в localStorage');
+                addLog('💡 Откройте основное приложение и войдите в систему');
+                return;
+            }
+            
+            addLog('🔑 Токен найден: ' + token.substring(0, 20) + '...');
+            
+            if (socket) {
+                socket.disconnect();
+            }
+            
+            // Подключаемся к HTTPS серверу
+            socket = io('https://localhost:3002', {
+                transports: ['websocket', 'polling'],
+                timeout: 20000,
+                rejectUnauthorized: false // Для самоподписанных сертификатов
+            });
+            
+            socket.on('connect', () => {
+                addLog('✅ WebSocket подключен: ' + socket.id);
+                updateStatus('✅ Подключен', true);
+                
+                // Аутентификация
+                socket.emit('authenticate', token);
+                addLog('🔐 Отправлен токен для аутентификации');
+            });
+            
+            socket.on('authenticated', (data) => {
+                addLog('✅ Аутентификация успешна: ' + JSON.stringify(data));
+            });
+            
+            socket.on('authentication_error', (error) => {
+                addLog('❌ Ошибка аутентификации: ' + JSON.stringify(error));
+            });
+            
+            socket.on('disconnect', (reason) => {
+                addLog('🔌 WebSocket отключен: ' + reason);
+                updateStatus('❌ Отключен', false);
+            });
+            
+            socket.on('connect_error', (error) => {
+                addLog('❌ Ошибка подключения: ' + error.message);
+                updateStatus('❌ Ошибка подключения', false);
+            });
+            
+            // Слушаем события задач
+            socket.on('task_created_global', (task) => {
+                addLog('🎉 НОВАЯ ЗАДАЧА (глобальное): ' + task.title + ' (ID: ' + task.id + ')');
+                addLog('👤 Назначена: ' + (task.assigneeName || 'Не указан'));
+            });
+            
+            socket.on('task_updated_global', (task) => {
+                addLog('📝 ОБНОВЛЕНИЕ ЗАДАЧИ (глобальное): ' + task.title + ' → ' + task.status);
+            });
+            
+            socket.on('task_created', (task) => {
+                addLog('📝 НОВАЯ ЗАДАЧА (персональная): ' + task.title);
+            });
+            
+            socket.on('task_updated', (task) => {
+                addLog('📝 ОБНОВЛЕНИЕ ЗАДАЧИ (персональная): ' + task.title + ' → ' + task.status);
+            });
+        }
+        
+        function clearLogs() {
+            logsDiv.innerHTML = '';
+        }
+        
+        // Автоматически тестируем подключение при загрузке
+        window.onload = function() {
+            addLog('🚀 Страница загружена, начинаем тест...');
+            testConnection();
+        };
+    </script>
+    
+    <!-- Подключаем Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</body>
+</html>

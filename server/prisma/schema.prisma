@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  passwordHash String  @map("password_hash")
+  firstName   String?  @map("first_name")
+  lastName    String?  @map("last_name")
+  patronymic  String?
+  role        Role     @default(USER)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  assignedTasks Task[] @relation("TaskAssignee")
+  createdTasks  Task[] @relation("TaskCreator")
+  updatedTasks  Task[] @relation("TaskUpdater")
+  
+  @@map("users")
+}
+
+model Task {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  priority     Priority  @default(MEDIUM)
+  deadline     DateTime?
+  status       Status    @default(ASSIGNED)
+  assigneeId   String?   @map("assignee_id")
+  assigneeName String?   @map("assignee_name")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  reportFile   Json?     @map("report_file")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  assignee User? @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator  User? @relation("TaskCreator", fields: [createdBy], references: [id])
+  updater  User? @relation("TaskUpdater", fields: [updatedBy], references: [id])
+  
+  @@map("tasks")
+  @@index([assigneeId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum Role {
+  USER  @map("user")
+  ADMIN @map("admin")
+  BOSS  @map("boss")
+}
+
+enum Priority {
+  LOW    @map("low")
+  MEDIUM @map("medium")
+  HIGH   @map("high")
+}
+
+enum Status {
+  ASSIGNED     @map("назначено")
+  IN_PROGRESS  @map("в работе")
+  UNDER_REVIEW @map("на проверке")
+  COMPLETED    @map("выполнено")
+  REVISION     @map("доработка")
+}

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500">
+  <!-- Основной фон флага -->
+  <rect width="1000" height="500" fill="#00AFCA"/>
+  
+  <!-- Солнце -->
+  <g transform="translate(200, 250)">
+    <!-- Лучи солнца -->
+    <g stroke="#FFDA44" stroke-width="3" fill="none">
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(0)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(30)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(60)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(90)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(120)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(150)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(180)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(210)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(240)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(270)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(300)"/>
+      <line x1="0" y1="-80" x2="0" y2="-100" transform="rotate(330)"/>
+    </g>
+    
+    <!-- Центральное солнце -->
+    <circle cx="0" cy="0" r="60" fill="#FFDA44"/>
+    
+    <!-- Орел в центре солнца -->
+    <g fill="#00AFCA" transform="scale(0.8)">
+      <path d="M-20,-10 Q0,-30 20,-10 Q15,0 10,10 Q0,5 -10,10 Q-15,0 -20,-10Z"/>
+      <circle cx="-8" cy="-15" r="2"/>
+      <circle cx="8" cy="-15" r="2"/>
+    </g>
+  </g>
+  
+  <!-- Казахский орнамент слева -->
+  <g transform="translate(50, 250)" fill="#FFDA44" opacity="0.8">
+    <!-- Вертикальный орнамент -->
+    <g>
+      <path d="M0,-200 Q10,-190 0,-180 Q-10,-170 0,-160 Q10,-150 0,-140 Q-10,-130 0,-120 Q10,-110 0,-100 Q-10,-90 0,-80 Q10,-70 0,-60 Q-10,-50 0,-40 Q10,-30 0,-20 Q-10,-10 0,0 Q10,10 0,20 Q-10,30 0,40 Q10,50 0,60 Q-10,70 0,80 Q10,90 0,100 Q-10,110 0,120 Q10,130 0,140 Q-10,150 0,160 Q10,170 0,180 Q-10,190 0,200" stroke="#FFDA44" stroke-width="2" fill="none"/>
+      
+      <!-- Дополнительные элементы орнамента -->
+      <circle cx="0" cy="-150" r="8" fill="#FFDA44"/>
+      <circle cx="0" cy="-50" r="8" fill="#FFDA44"/>
+      <circle cx="0" cy="50" r="8" fill="#FFDA44"/>
+      <circle cx="0" cy="150" r="8" fill="#FFDA44"/>
+      
+      <!-- Боковые элементы -->
+      <path d="M-15,-100 Q-25,-95 -15,-90 Q-5,-95 -15,-100" fill="#FFDA44"/>
+      <path d="M15,-100 Q25,-95 15,-90 Q5,-95 15,-100" fill="#FFDA44"/>
+      <path d="M-15,0 Q-25,5 -15,10 Q-5,5 -15,0" fill="#FFDA44"/>
+      <path d="M15,0 Q25,5 15,10 Q5,5 15,0" fill="#FFDA44"/>
+      <path d="M-15,100 Q-25,105 -15,110 Q-5,105 -15,100" fill="#FFDA44"/>
+      <path d="M15,100 Q25,105 15,110 Q5,105 15,100" fill="#FFDA44"/>
+    </g>
+  </g>
+  
+  <!-- Дополнительные орнаментальные элементы по краям -->
+  <g fill="#FFDA44" opacity="0.6">
+    <!-- Правый край -->
+    <g transform="translate(950, 100)">
+      <circle cx="0" cy="0" r="15"/>
+      <path d="M-10,-10 Q0,-20 10,-10 Q0,0 -10,-10" fill="#00AFCA"/>
+    </g>
+    <g transform="translate(950, 200)">
+      <circle cx="0" cy="0" r="15"/>
+      <path d="M-10,-10 Q0,-20 10,-10 Q0,0 -10,-10" fill="#00AFCA"/>
+    </g>
+    <g transform="translate(950, 300)">
+      <circle cx="0" cy="0" r="15"/>
+      <path d="M-10,-10 Q0,-20 10,-10 Q0,0 -10,-10" fill="#00AFCA"/>
+    </g>
+    <g transform="translate(950, 400)">
+      <circle cx="0" cy="0" r="15"/>
+      <path d="M-10,-10 Q0,-20 10,-10 Q0,0 -10,-10" fill="#00AFCA"/>
+    </g>
+  </g>
+</svg>

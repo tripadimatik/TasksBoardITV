@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .connected { background-color: #d4edda; color: #155724; }
+        .disconnected { background-color: #f8d7da; color: #721c24; }
+        .log { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; max-height: 300px; overflow-y: auto; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    
+    <div id="status" class="status disconnected">Disconnected</div>
+    
+    <button onclick="connect()">Connect</button>
+    <button onclick="disconnect()">Disconnect</button>
+    <button onclick="authenticate()">Authenticate</button>
+    <button onclick="clearLog()">Clear Log</button>
+    
+    <div id="log" class="log"></div>
+    
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        let socket = null;
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${time}] ${message}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        function updateStatus(connected) {
+            if (connected) {
+                statusEl.textContent = 'Connected';
+                statusEl.className = 'status connected';
+            } else {
+                statusEl.textContent = 'Disconnected';
+                statusEl.className = 'status disconnected';
+            }
+        }
+        
+        function connect() {
+            if (socket) {
+                socket.disconnect();
+            }
+            
+            const wsUrl = 'http://localhost:3001';
+            log(`Attempting to connect to: ${wsUrl}`);
+            
+            socket = io(wsUrl, {
+                transports: ['websocket', 'polling']
+            });
+            
+            socket.on('connect', () => {
+                log('✅ Connected to WebSocket server');
+                updateStatus(true);
+            });
+            
+            socket.on('disconnect', (reason) => {
+                log(`❌ Disconnected: ${reason}`);
+                updateStatus(false);
+            });
+            
+            socket.on('connect_error', (error) => {
+                log(`❌ Connection error: ${error.message}`);
+                updateStatus(false);
+            });
+            
+            socket.on('authenticated', (data) => {
+                log(`✅ Authenticated: ${JSON.stringify(data)}`);
+            });
+            
+            socket.on('authentication_error', (data) => {
+                log(`❌ Authentication error: ${JSON.stringify(data)}`);
+            });
+            
+            socket.on('task_created', (data) => {
+                log(`📝 Task created: ${JSON.stringify(data)}`);
+            });
+            
+            socket.on('task_updated', (data) => {
+                log(`📝 Task updated: ${JSON.stringify(data)}`);
+            });
+            
+            socket.on('task_deleted', (data) => {
+                log(`🗑️ Task deleted: ${JSON.stringify(data)}`);
+            });
+        }
+        
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+        }
+        
+        function authenticate() {
+            if (!socket) {
+                log('❌ Not connected to WebSocket');
+                return;
+            }
+            
+            // Используем тестовый токен (в реальном приложении берем из localStorage)
+            const token = localStorage.getItem('token') || 'test-token';
+            log(`🔐 Sending authentication with token: ${token.substring(0, 20)}...`);
+            socket.emit('authenticate', token);
+        }
+        
+        function clearLog() {
+            logEl.innerHTML = '';
+        }
+        
+        // Автоматически подключаемся при загрузке страницы
+        window.onload = () => {
+            log('🚀 WebSocket test page loaded');
+            connect();
+        };
+    </script>
+</body>
+</html>
